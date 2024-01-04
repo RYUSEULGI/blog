@@ -6,7 +6,7 @@ export default function Title({ className, ...props }: ComponentProps<'h1'>) {
     <h1
       {...props}
       className={clsx(
-        'mt-10 mb-4 text-2xl font-bold md:text-3xl lg:text-4xl',
+        'mt-6 mb-4 text-2xl font-bold md:text-3xl lg:text-4xl',
         className,
       )}
     />

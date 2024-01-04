@@ -5,7 +5,7 @@ export function NavbarMenus() {
   return (
     <ul className="flex items-center gap-3 cursor-pointer">
       <Menu href="/">Home</Menu>
-      <Menu href="/posts">Posts</Menu>
+      <Menu href="/posts/all">Posts</Menu>
       <Menu href="/tags">Tags</Menu>
     </ul>
   )

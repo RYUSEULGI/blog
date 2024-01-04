@@ -13,7 +13,7 @@ export function Navbar() {
         scrolled && 'border-b shadow-sm',
       )}
     >
-      <div className="h-full mx-auto max-w-3xl px-4 lg:max-w-6xl lg:px-6">
+      <div className="h-full mx-auto max-w-3xl px-4 lg:max-w-5xl lg:px-6">
         <div className="h-full w-full flex items-center justify-between">
           <NavbarMenus />
           <ThemeButton />

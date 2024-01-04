@@ -6,10 +6,10 @@ export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div>
       <Navbar />
-      <div className="h-full mx-auto max-w-3xl px-6 lg:max-w-6xl lg:px-8">
+      <div className="h-full mx-auto max-w-2xl px-6 lg:max-w-4xl lg:px-8">
         <div className="min-h-screen flex flex-col justify-between gap-10">
           <main className="relative">
-            <div className="mt-16">{children}</div>
+            <div className="mt-20">{children}</div>
           </main>
           <Footer />
         </div>
