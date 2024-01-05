@@ -1,6 +1,6 @@
 import { TextButton } from '@/components/button/text-button'
 import Layout from '@/components/layouts'
-import { RecentPostCardList } from '@/components/pages/home/recent-card-list'
+import { PostCardList } from '@/components/pages/home/post-card-list'
 
 import { InfoBox } from '@/components/pages/home/info-box'
 import SubTitle from '@/components/typography/sub-title'
@@ -30,7 +30,7 @@ export default function HomePage({ posts }: Props) {
               전체보기
             </TextButton>
           </div>
-          <RecentPostCardList posts={posts} />
+          <PostCardList posts={posts} />
         </section>
       </div>
     </Layout>
