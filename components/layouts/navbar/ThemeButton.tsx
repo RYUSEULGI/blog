@@ -18,7 +18,7 @@ export function ThemeButton() {
 
   return (
     <button onClick={handleClick}>
-      <div className="flex items-center justify-center w-8 h-8 text-yellow-300 rounded-lg hover:bg-gray-100">
+      <div className="flex items-center justify-center w-8 h-8 text-yellow-300 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700">
         {isDark ? (
           <MoonIcon className="w-5 h-5" />
         ) : (

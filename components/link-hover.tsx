@@ -14,7 +14,7 @@ export default function LinkHover({
       {...props}
       href={href ?? '/'}
       className={clsx(
-        'flex items-center justify-center rounded-lg hover:bg-gray-100',
+        'flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700',
         className,
       )}
     >

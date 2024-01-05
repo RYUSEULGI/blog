@@ -41,7 +41,7 @@ export function TabList({ value, items, onClick }: Props) {
   return (
     <div className="relative w-full overflow-visible">
       <div
-        className="absolute bottom-0 left-0 h-0.5 bg-black rounded transition-transform transition-width duration-200 ease-in-out"
+        className="absolute bottom-0 left-0 h-0.5 bg-black rounded transition-transform transition-width duration-200 ease-in-out dark:bg-white"
         style={{
           width: `${activeTabWidth}px`,
           transform: `translateX(${tabTransform}px) translateZ(0px)`,
@@ -58,7 +58,8 @@ export function TabList({ value, items, onClick }: Props) {
             <h5
               className={clsx(
                 'm-0 flex items-center justify-center text-base text-neutral-400 font-medium transition-all duration-200 ease-in-out',
-                value === item.value && 'text-neutral-900 font-bold',
+                value === item.value &&
+                  'text-neutral-900 font-bold dark:text-white',
               )}
             >
               {item.name}
