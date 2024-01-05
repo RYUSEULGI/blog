@@ -1,4 +1,3 @@
-import { ThemeProvider } from 'next-themes'
 import { Head, Html, Main, NextScript } from 'next/document'
 
 export default function Document() {
@@ -24,15 +23,7 @@ export default function Document() {
         <meta name="twitter:image" content={meta.image} />
       </Head>
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-          storageKey="skeyyy-dev-blog"
-        >
-          <Main />
-        </ThemeProvider>
+        <Main />
         <NextScript />
       </body>
     </Html>
