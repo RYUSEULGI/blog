@@ -7,7 +7,7 @@ interface Props {
 
 export function PostHeader({ title, date }: Props) {
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto lg:max-w-4xl pt-0.5">
       <Title>{title}</Title>
       <div className="mb-6 text-lg">{date}</div>
     </div>

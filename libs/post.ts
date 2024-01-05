@@ -2,22 +2,27 @@ import fs from 'fs'
 import matter from 'gray-matter'
 import { join } from 'path'
 
-const postsDirectory = join(process.cwd(), 'posts/develop')
-
-export function getPostSlugs() {
-  return fs.readdirSync(postsDirectory)
+type Items = {
+  [key: string]: string
 }
 
-export function getPostBySlug(slug: string, fields: string[] = []) {
+export const articleDir = join(process.cwd(), 'posts/article')
+export const algorithmDir = join(process.cwd(), 'posts/algorithm')
+
+export function getSlugs(dir: string) {
+  return fs.readdirSync(dir)
+}
+
+export function getPostBySlug(
+  slug: string,
+  fields: string[] = [],
+  dir: string,
+) {
   const realSlug = slug.replace(/\.md$/, '')
 
-  const fullPath = join(postsDirectory, `${realSlug}.md`)
+  const fullPath = join(dir, `${realSlug}.md`)
   const fileContents = fs.readFileSync(fullPath, 'utf8')
   const { data, content } = matter(fileContents)
-
-  type Items = {
-    [key: string]: string
-  }
 
   const items: Items = {}
 
@@ -39,18 +44,33 @@ export function getPostBySlug(slug: string, fields: string[] = []) {
 }
 
 export function getAllPosts(fields: string[] = []) {
-  const slugs = getPostSlugs()
+  const posts = getArticlePosts(fields)
+  const algorithmPosts = getAlgorithmPosts(fields)
+
+  const data = posts
+    .concat(algorithmPosts)
+    .sort((post1, post2) => (post1.date > post2.date ? -1 : 1))
+  return data
+}
+
+export function getArticlePosts(fields: string[] = []) {
+  const slugs = getSlugs(articleDir)
+
   const posts = slugs
-    .map((slug) => getPostBySlug(slug, fields))
+    .map((slug) => getPostBySlug(slug, fields, articleDir))
+    .sort((post1, post2) => (post1.date > post2.date ? -1 : 1))
+  return posts
+}
+
+export function getAlgorithmPosts(fields: string[] = []) {
+  const slugs = getSlugs(algorithmDir)
+
+  const posts = slugs
+    .map((slug) => getPostBySlug(slug, fields, algorithmDir))
     .sort((post1, post2) => (post1.date > post2.date ? -1 : 1))
   return posts
 }
 
 export function getRecentPosts(fields: string[] = []) {
-  const slugs = getPostSlugs()
-  const posts = slugs
-    .map((slug) => getPostBySlug(slug, fields))
-    .sort((post1, post2) => (post1.date > post2.date ? -1 : 1))
-    .slice(0, 4)
-  return posts
+  return getAllPosts(fields).slice(0, 4)
 }
