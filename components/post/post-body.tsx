@@ -4,6 +4,8 @@ import remarkGfm from 'remark-gfm'
 
 import { Suspense } from 'react'
 
+import '../../styles/md.css'
+
 const options: {
   mdxOptions: {
     remarkPlugins: any[]

@@ -5,7 +5,7 @@ import { Metadata } from 'next'
 import { ReactNode } from 'react'
 import Providers from '../providers'
 
-import '../globals.css'
+import '../../styles/globals.css'
 
 export const metadata: Metadata = {
   title: 'skeyyy 개발 블로그',
