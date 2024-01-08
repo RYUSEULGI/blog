@@ -5,7 +5,7 @@ thumbnail: '/default-image.jpg'
 tags:
   - Next.js
   - Blog
-  - highlight
+  - Markdown
 date: '2024-01-08'
 ---
 
@@ -32,6 +32,8 @@ React 기반으로 블로그를 만들려고 했기 때문에 Gatsby 프레임�
 
 > vercel의 [blog-starter](https://github.com/vercel/next.js/tree/canary/examples/blog-starter) 레포지토리와 [공식문서](https://nextjs.org/docs/app/building-your-application/configuring/mdx)를 참고하여 마크다운으로 글 작성하는 법을 추가했다.
 
+### 1. 파일 가져오기
+
 ```typescript
 import fs from 'fs'
 import matter from 'gray-matter'
@@ -43,33 +45,107 @@ const fileContents = fs.readFileSync(fullPath, 'utf8')
 const { data, content } = matter(fileContents)
 ```
 
-파일 경로의 md 파일을 가지고 와서 md 파일을 파싱 하는 방법을 통해 작성된 데이터를 얻을 수 있다. 이때 [gray-matter](https://www.npmjs.com/package/gray-matter) 라이브러리를 사용하는데 md 파일의 메타데이터를 쉽게 파싱 할 수 있게 도와준다.
+파일 경로의 파일을 가지고 와서 파싱 하는 방법을 통해 작성된 데이터를 얻을 수 있다. 이때 [gray-matter](https://www.npmjs.com/package/gray-matter) 라이브러리를 사용하는데 마크다운 파일의 메타데이터를 쉽게 파싱 할 수 있게 도와준다.
 
-```json
-// md 상단
----
+```md
+## // md 상단
+
 title: Hello
 slug: home
+
 ---
 
 <h1>Hello world!</h1>
 
 // 결과
 {
-  "content": "<h1>Hello world!</h1>",
-  "data": {
-    "title": "Hello",
-    "slug": "home"
-  }
+"content": "<h1>Hello world!</h1>",
+"data": {
+"title": "Hello",
+"slug": "home"
+}
 }
 ```
 
-예를 들어 md 파일의 최상단에 다음과 같이 작성해 주면 json 형태의 결과값을 얻을 수 있다. 이를 응용하여 md으로 작성한 글을 가지고 올 수 있게 된다. nextj3 공식문서를 보면 [md](https://nextjs.org/docs/app/building-your-application/configuring/mdx) 관련하여 글이 있길래 해당부분을 적용해보기로 했다.
+예를 들어 마크다운 파일의 최상단에 다음과 같이 작성해 주면 json 형태의 결과값을 얻을 수 있다. 이를 응용하여 작성한 글을 가지고 올 수 있게 된다.
 
-vercel의 blog-starter를 따라하며 블로그를 만들고 있었는데 코드블럭의 경우 다음과 같이 스타일이 모두 적용되지 않은채 보여 가독성이 많이 떨어지는 것을 확인 할 수 있었다. 다른 태그 요소들 처럼 css 스타일을 적용해 주는 대신에 라이브러리를 사용해서 하이라이터를 적용해주었다.
+### 2. html로 변환
 
-//https://github.com/PrismJS/prism-themes/tree/master/themes
+작성한 글을 가지고 왔으면 화면에 보여주어야 하는데 [공식문서](https://nextjs.org/docs/app/building-your-application/configuring/mdx)에서 확인 할 수 있듯이 `next-mdx-remote`패키지로 마크다운을 html로 변환하여 나타내 준다.
 
-```typescript
-// 하이라이터 적용 코드 작성하기
+### 3. 스타일링
+
+html로 변환하여 나타내 주면 끝인 줄 알았지만 화면을 살펴보니 스타일링이 적용되지 않은 걸 확인 할 수 있었다 마크다운을 html로 변환만 해준거니 당연한 결과였다.
+
+```css
+.markdown {
+  @apply text-lg leading-relaxed;
+}
+
+.markdown p,
+.markdown ul,
+.markdown ol,
+.markdown blockquote {
+  @apply my-6;
+}
+
+.markdown h2 {
+  @apply text-3xl mt-12 mb-4 leading-snug;
+}
+
+.markdown h3 {
+  @apply text-2xl mt-8 mb-4 leading-snug;
+}
 ```
+
+blog-starter에서는 이런식으로 직접 css를 직접 적용해 주었지만 [@tailwindcss/typography](https://tailwindcss.com/docs/typography-plugin)플러그인이 깔끔하게 잘 되어 있어서 나는 플러그인을 사용했다.
+
+```ts
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  theme: {
+    // ...
+  },
+  plugins: [
+    require('@tailwindcss/typography'),
+    // ...
+  ],
+}
+```
+
+```tsx
+<div className="prose dark:prose-invert">
+  <MDXRemote source={content} options={options} />
+</div>
+```
+
+1. @tailwindcss/typography 설치 후 플러그인을 적용
+2. className="prose dark:prose-invert"을 추가
+
+깔끔하게 타이포그래피가 HTML에 적용된 모습을 볼 수 있다. 추가적인 스타일은 `prose` 클랙스명을 추가해서 커스텀이 가능하다.
+
+### 4. 플러그인 적용
+
+`remark-*`markdown과, `rehype-*`은 html과 관련된 플러그인을 뜻한다. 나는 많은 플러그인들 중에 가장 기본적인 remark-gfm와 rehype-prism-plus를 사용했다.
+
+- remark-gfm — support GFM (autolink literals, footnotes, strikethrough, tables, tasklists)
+- rehype-prism-plus — syntax highlighting with Prism via refractor with extras[Prism.js](https://github.com/PrismJS/prism-themes/tree/master/themes)
+
+```tsx
+import { MDXRemote } from 'next-mdx-remote/rsc'
+import rehypePrism from 'rehype-prism-plus'
+import remarkGfm from 'remark-gfm'
+
+import '../../styles/md.css'
+
+const options = {
+  mdxOptions: {
+    remarkPlugins: [remarkGfm],
+    rehypePlugins: [rehypePrism],
+  },
+}
+
+return <MDXRemote source={content} options={options} />
+```
+
+> remark-gfm의 최신 버전 설치시 [TypeError발생](https://github.com/remarkjs/remark-gfm/issues/57) -> 3.0.1로 다운그레이드 하여 설치
