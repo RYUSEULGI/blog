@@ -1,3 +1,5 @@
+'use client'
+
 import { useScrollTop } from '@/hooks/use-scroll-top'
 import clsx from 'clsx'
 import { ThemeButton } from './ThemeButton'

@@ -2,7 +2,7 @@ import fs from 'fs'
 import matter from 'gray-matter'
 import { join } from 'path'
 
-type Items = {
+export interface Items {
   [key: string]: string
 }
 

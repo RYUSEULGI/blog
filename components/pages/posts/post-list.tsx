@@ -1,28 +1,34 @@
+'use client'
+
 import DefaultText from '@/components/typography/default-text'
 import SubTitle from '@/components/typography/sub-title'
 import { useHover } from '@/hooks/use-hover'
 import { Post } from '@/interface/post'
 import clsx from 'clsx'
+import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 
 interface Props {
-  category: string
   posts: Post[]
 }
 
-export function PostList({ category, posts }: Props) {
+export function PostList({ posts }: Props) {
   return (
-    <>
-      {posts.map((post) => (
-        <Link
+    <AnimatePresence>
+      {posts.map((post, index: number) => (
+        <motion.div
           key={`post-list-item-${post.slug}`}
-          href={`/posts/${category}/${post.slug}`}
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: index * 0.2 }}
         >
-          <PostListItem post={post} />
-        </Link>
+          <Link href={`/posts/${post.slug}`}>
+            <PostListItem post={post} />
+          </Link>
+        </motion.div>
       ))}
-    </>
+    </AnimatePresence>
   )
 }
 
@@ -49,7 +55,7 @@ function PostListItem({ post }: { post: Post }) {
         >
           {post.title}
         </SubTitle>
-        <DefaultText className="mb-2 line-clamp-2 text-neutral-400">
+        <DefaultText className="mb-2 line-clamp-2 text-neutral-500">
           {post.description}
         </DefaultText>
         <p className="text-sm text-neutral-500">{post.date}</p>

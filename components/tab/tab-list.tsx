@@ -1,13 +1,17 @@
+'use client'
+
 import clsx from 'clsx'
+import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 
 interface Props {
   value: string
   items: { name: string; value: string }[]
-  onClick?: (value: string) => void
 }
 
-export function TabList({ value, items, onClick }: Props) {
+export function TabList({ value, items }: Props) {
+  const router = useRouter()
+
   const tabRef = useRef<HTMLUListElement>(null)
 
   const [activeTabIndex, setActiveTabIndex] = useState(0)
@@ -34,7 +38,7 @@ export function TabList({ value, items, onClick }: Props) {
   }, [activeTabIndex, items, value])
 
   const handleClick = (value: string, index: number) => {
-    onClick && onClick(value)
+    router.push(`/posts?category=${value}`)
     setActiveTabIndex(index)
   }
 

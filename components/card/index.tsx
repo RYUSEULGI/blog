@@ -32,7 +32,9 @@ export function Card({ href, thumbnail, title, description }: Props) {
         >
           {title}
         </BodyText>
-        <DefaultText className="line-clamp-2">{description}</DefaultText>
+        <DefaultText className="line-clamp-2 text-neutral-500 dark:text-neutral-400">
+          {description}
+        </DefaultText>
       </div>
     </Link>
   )
