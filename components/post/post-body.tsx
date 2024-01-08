@@ -1,18 +1,22 @@
-import { MDXRemoteSerializeResult } from 'next-mdx-remote'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import rehypePrism from 'rehype-prism-plus'
 import remarkGfm from 'remark-gfm'
 
 import { Suspense } from 'react'
 
-const options = {
+const options: {
+  mdxOptions: {
+    remarkPlugins: any[]
+    rehypePlugins: any[]
+  }
+} = {
   mdxOptions: {
     remarkPlugins: [remarkGfm],
     rehypePlugins: [rehypePrism],
   },
 }
 
-export function PostBody({ content }: { content: MDXRemoteSerializeResult }) {
+export function PostBody({ content }: { content: string }) {
   return (
     <section>
       <Suspense fallback={<>Loading...</>}>

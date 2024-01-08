@@ -11,14 +11,10 @@ import {
 import { Post, PostCategory } from '@/interface/post'
 
 interface Props {
-  posts: Post[]
-}
-
-interface Props {
   searchParams?: { [key: string]: string | undefined }
 }
 
-export default function PostTypePage({ searchParams }: Props) {
+export default function PostPage({ searchParams }: Props) {
   const { category: categoryParam } = searchParams as {
     [key: string]: string | undefined
   }

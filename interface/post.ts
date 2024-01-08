@@ -1,5 +1,3 @@
-import { MDXRemoteSerializeResult } from 'next-mdx-remote'
-
 export enum PostCategory {
   전체 = 'all',
   글 = 'article',
@@ -13,5 +11,5 @@ export interface Post {
   thumbnail: string
   date: string
   tags: string[]
-  content: MDXRemoteSerializeResult
+  content: string
 }

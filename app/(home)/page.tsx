@@ -2,7 +2,6 @@ import { TextButton } from '@/components/button/text-button'
 import { InfoBox } from '@/components/pages/home/info-box'
 import { PostCardList } from '@/components/pages/home/post-card-list'
 import SubTitle from '@/components/typography/sub-title'
-import Title from '@/components/typography/title'
 import { Post } from '@/interface/post'
 import { getRecentPosts } from '@/libs/post'
 import Link from 'next/link'
@@ -19,7 +18,6 @@ export default function HomePage() {
   return (
     <div className="flex flex-col gap-16">
       <section className="flex flex-col items-start">
-        <Title>RYUSEULGI</Title>
         <InfoBox />
       </section>
       <section>
