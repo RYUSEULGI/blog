@@ -6,7 +6,6 @@ import { useHover } from '@/hooks/use-hover'
 import { Post } from '@/interface/post'
 import clsx from 'clsx'
 import { AnimatePresence, motion } from 'framer-motion'
-import Image from 'next/image'
 import Link from 'next/link'
 
 interface Props {
@@ -39,25 +38,11 @@ function PostListItem({ post }: { post: Post }) {
   return (
     <div
       {...props}
-      className="w-full flex flex-col items-start gap-5 py-10 cursor-pointer sm:items-center sm:flex-row sm:gap-10 lg:gap-20"
+      className="w-full flex flex-col items-start gap-5 py-10 border-b border-b-gray-100 cursor-pointer sm:items-center sm:flex-row sm:gap-10 lg:gap-20"
     >
-      <div
-        ref={ref}
-        className="relative aspect-square h-full w-full max-h-[250px] overflow-hidden"
-      >
-        <Image
-          src={post.thumbnail}
-          alt="post-thumbnail"
-          fill
-          className={clsx(
-            'h-full w-full object-cover rounded-lg',
-            isHover && 'shadow-lg',
-          )}
-        />
-      </div>
-      <div className="w-full sm:w-[700px]">
+      <div className="w-full">
         <SubTitle
-          className={clsx('mb-3 sm:mb-8', isHover && 'text-orange-400')}
+          className={clsx('mb-3 sm:mb-6', isHover && 'text-orange-400')}
         >
           {post.title}
         </SubTitle>

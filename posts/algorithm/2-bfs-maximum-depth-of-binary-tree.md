@@ -1,7 +1,6 @@
 ---
 title: 'Maximum Depth of Binary Tree'
 description: 'Leetcode Top 100 Liked Questions BFS'
-thumbnail: '/algorithm/leetcode/104.png'
 tags:
   - algorithm
   - BFS

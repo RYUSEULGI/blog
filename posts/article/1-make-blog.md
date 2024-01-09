@@ -1,7 +1,6 @@
 ---
 title: 'Next.js로 블로그 만들기(1)'
 description: '미루고 미루던 개발 블로그를 만들어보자'
-thumbnail: '/article/make-blog/1.png'
 tags:
   - Next.js
   - Blog

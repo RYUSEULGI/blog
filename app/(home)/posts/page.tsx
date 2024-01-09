@@ -21,7 +21,7 @@ export default function PostPage({ searchParams }: Props) {
   const category = categoryParam || PostCategory.전체
 
   let posts: Items[] = []
-  const fields = ['slug', 'thumbnail', 'title', 'date', 'tags', 'description']
+  const fields = ['slug', 'title', 'date', 'tags', 'description']
 
   if (category === PostCategory.글) {
     posts = getArticlePosts(fields)
