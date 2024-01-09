@@ -1,0 +1,70 @@
+---
+title: 'Maximum Depth of Binary Tree'
+description: 'Leetcode Top 100 Liked Questions BFS'
+thumbnail: '/algorithm/leetcode/104.png'
+tags:
+  - algorithm
+  - BFS
+  - Leetcode
+date: '2024-01-09'
+---
+
+- 알고리즘 : BFS
+- 난이도 : Easy
+
+## 문제
+
+Given the root of a binary tree, return its maximum depth.
+
+A binary tree's maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.
+
+## 풀이
+
+```ts
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     val: number
+ *     left: TreeNode | null
+ *     right: TreeNode | null
+ *     constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
+ *         this.val = (val===undefined ? 0 : val)
+ *         this.left = (left===undefined ? null : left)
+ *         this.right = (right===undefined ? null : right)
+ *     }
+ * }
+ */
+
+function maxDepth(root: TreeNode | null): number {
+  let result = 0
+  const queue = []
+
+  if (root === null) {
+    return 0
+  }
+
+  queue.push(root)
+
+  while (queue.length > 0) {
+    let length = queue.length
+
+    for (let i = 0; i < length; i++) {
+      const x = queue.shift()
+
+      if (x.left) {
+        queue.push(x.left)
+      }
+
+      if (x.right) {
+        queue.push(x.right)
+      }
+    }
+    result += 1
+  }
+
+  return result
+}
+```
+
+- 2진 트리의 높이를 찾는 문제
+- 큐에 왼쪽 오른쪽 나누어 넣어서 계속 비교해 가는 방법으로 풀이
