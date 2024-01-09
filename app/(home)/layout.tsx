@@ -28,15 +28,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          <div>
-            <Navbar />
-            <div className="h-full mx-auto max-w-2xl px-6 lg:max-w-4xl lg:px-8">
-              <div className="min-h-screen flex flex-col justify-between gap-10">
-                <main className="relative">
-                  <div className="mt-20">{children}</div>
-                </main>
-                <Footer />
-              </div>
+          <Navbar />
+          <div className="h-full mx-auto max-w-2xl px-6 lg:max-w-4xl lg:px-8">
+            <div className="min-h-screen flex flex-col justify-between gap-10">
+              <main className="relative mt-20">{children}</main>
+              <Footer />
             </div>
           </div>
         </Providers>
