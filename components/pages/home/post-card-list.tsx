@@ -3,7 +3,7 @@
 import { Card } from '@/components/card'
 import Grid from '@/components/layouts/grid'
 import DefaultText from '@/components/typography/default-text'
-import { Post, PostCategory } from '@/interface/post'
+import { Post } from '@/interface/post'
 import { useEffect, useState } from 'react'
 
 interface Props {
@@ -49,8 +49,6 @@ export function PostCardList({ posts }: Props) {
 }
 
 function PostCardListItem({ post }: { post: Post }) {
-  const isAlgorithm = post.tags.includes(PostCategory.알고리즘)
-
   return (
     <Grid.Item>
       <Card

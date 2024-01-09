@@ -23,7 +23,7 @@ export default function HomePage() {
       <section>
         <div className="flex items-center justify-between">
           <SubTitle className="mb-9">Recent Posts</SubTitle>
-          <Link href="/posts/all">
+          <Link href="/posts">
             <TextButton>전체보기</TextButton>
           </Link>
         </div>
