@@ -1,21 +1,32 @@
 import { Footer } from '@/components/layouts/footer'
 import { Navbar } from '@/components/layouts/navbar'
 
-import { Metadata } from 'next'
 import { ReactNode } from 'react'
 import Providers from '../providers'
 
+import { baseUrl } from '@/libs/utils'
+import { Inter } from 'next/font/google'
 import '../../styles/globals.css'
 
-export const metadata: Metadata = {
+const inter = Inter({ subsets: ['latin'] })
+
+export const metadata = {
+  metadataBase: new URL(baseUrl),
   title: 'skeyyy 개발 블로그',
   description: 'skeyyy 개발 블로그 입니다.',
+  robots: {
+    follow: true,
+    index: true,
+  },
+  openGraph: {
+    type: 'website',
+  },
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body>
+      <body className={inter.className}>
         <Providers>
           <div>
             <Navbar />
