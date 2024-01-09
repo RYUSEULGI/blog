@@ -1,7 +1,7 @@
 ---
 title: '2023년 회고'
 description: '4L을 기반으로 하는 2023년 회고'
-thumbnail: '/default-image.jpg'
+thumbnail: '/article/review/2023.png'
 tags:
 date: '2023-12-27'
 ---

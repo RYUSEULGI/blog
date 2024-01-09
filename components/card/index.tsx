@@ -18,17 +18,22 @@ export function Card({ href, thumbnail, title, description }: Props) {
   return (
     <Link href={href}>
       <div {...props}>
-        <div ref={ref}>
+        <div
+          ref={ref}
+          className="relative aspect-square h-full max-h-[200px] w-full overflow-hidden"
+        >
           <Image
             src={thumbnail}
-            width={400}
-            height={300}
+            fill
             alt="post_thumbnail"
-            className={clsx('mb-3 rounded-lg', isHover && 'shadow-lg')}
+            className={clsx(
+              'h-full w-full object-cover rounded-lg',
+              isHover && 'shadow-lg',
+            )}
           />
         </div>
         <BodyText
-          className={clsx('mb-3 truncate', isHover && 'text-orange-400')}
+          className={clsx('my-3 truncate', isHover && 'text-orange-400')}
         >
           {title}
         </BodyText>

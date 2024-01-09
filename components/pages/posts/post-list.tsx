@@ -22,6 +22,7 @@ export function PostList({ posts }: Props) {
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: index * 0.2 }}
+          className="w-full"
         >
           <Link href={`/posts/${post.slug}`}>
             <PostListItem post={post} />
@@ -40,16 +41,21 @@ function PostListItem({ post }: { post: Post }) {
       {...props}
       className="w-full flex flex-col items-start gap-5 py-10 cursor-pointer sm:items-center sm:flex-row sm:gap-10 lg:gap-20"
     >
-      <div ref={ref}>
+      <div
+        ref={ref}
+        className="relative aspect-square h-full w-full max-h-[250px] overflow-hidden"
+      >
         <Image
           src={post.thumbnail}
           alt="post-thumbnail"
-          width={300}
-          height={200}
-          className={clsx('rounded-lg', isHover && 'shadow-lg')}
+          fill
+          className={clsx(
+            'h-full w-full object-cover rounded-lg',
+            isHover && 'shadow-lg',
+          )}
         />
       </div>
-      <div className="w-full sm:w-[360px]">
+      <div className="w-full sm:w-[700px]">
         <SubTitle
           className={clsx('mb-3 sm:mb-8', isHover && 'text-orange-400')}
         >
