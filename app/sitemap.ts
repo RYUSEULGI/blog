@@ -1,4 +1,4 @@
-import { getAllPosts } from '@/libs/post'
+import { getPostAll } from '@/libs/post'
 import { baseUrl } from '@/libs/utils'
 
 import { MetadataRoute } from 'next'
@@ -14,8 +14,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date().toISOString(),
   }))
 
-  const posts = getAllPosts(['slug', 'date']).map((post) => ({
-    url: `${baseUrl}/posts/${post.slug}`,
+  const posts = getPostAll().map((post) => ({
+    url: `${baseUrl}/posts/${post.category}/${post._raw.sourceFileName}`,
     lastModified: new Date(post.date).toISOString(),
   }))
 
