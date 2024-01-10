@@ -13,8 +13,8 @@ export default function TagsPage() {
         {tags.map(
           (tag) =>
             tag && (
-              <Link href={`/tags/${tag}`}>
-                <Label key={`${tag}-tag`}>{tag}</Label>
+              <Link href={`/tags/${tag}`} key={`${tag}-tag`}>
+                <Label>{tag}</Label>
               </Link>
             ),
         )}
