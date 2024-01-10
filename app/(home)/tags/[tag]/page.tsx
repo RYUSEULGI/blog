@@ -1,15 +1,15 @@
-import { Label } from '@/components/label'
+import { PostList } from '@/components/pages/posts/post-list'
 import Title from '@/components/typography/title'
+import { getPostListByTag } from '@/libs/post'
 
-export default function TagsPage() {
+export default function TagPostPage({ params }: { params: { tag: string } }) {
+  const posts = getPostListByTag(params.tag)
+
   return (
     <div className="flex flex-col items-start">
-      <Title>Tags</Title>
-
-      <div className="flex items-center gap-3 flex-wrap">
-        {[...Array(100)].fill(0).map((v) => (
-          <Label key={v}>{v}</Label>
-        ))}
+      <Title>{params.tag}</Title>
+      <div className="mt-4">
+        <PostList posts={posts} />
       </div>
     </div>
   )

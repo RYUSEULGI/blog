@@ -7,6 +7,16 @@ export function getArchiveList() {
   )
 }
 
+export function getPostAll() {
+  const posts = allPosts.filter(
+    (post) =>
+      post._raw.sourceFilePath.includes('article') ||
+      (post._raw.sourceFilePath.includes('algorithm') &&
+        post._raw.sourceFileName !== 'index.mdx'),
+  )
+  return posts
+}
+
 export function getArticlePostAll() {
   const posts = allPosts
     .filter(
@@ -57,4 +67,21 @@ export function getPostBySlug(category: string, slug: string) {
   const nextPost = posts[index - 1] ?? null
 
   return { post, prevPost, nextPost }
+}
+
+export function getPostListByTag(tag: string) {
+  const posts = getPostAll().filter(
+    (post) => post.tags && post.tags.includes(tag),
+  )
+
+  return posts
+}
+
+export function getTags() {
+  const tags = getPostAll().reduce((ac, v) => {
+    v.tags && v.tags.forEach((tag) => ac.add(tag))
+    return ac
+  }, new Set<string>([]))
+
+  return Array.from(tags)
 }

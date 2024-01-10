@@ -9,10 +9,7 @@ export function PostFooter({ tags }: { tags: string[] }) {
         {tags &&
           tags.length > 0 &&
           tags.map((tag) => (
-            <Link
-              href={`/tags/${tag.toLocaleLowerCase()}`}
-              key={`post-tag-${tag}`}
-            >
+            <Link href={`/tags/${tag}`} key={`post-tag-${tag}`}>
               <Label>{tag}</Label>
             </Link>
           ))}

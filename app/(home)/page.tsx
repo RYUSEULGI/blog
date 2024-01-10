@@ -31,7 +31,7 @@ export default function HomePage({ searchParams }: Props) {
           ]}
         />
       </div>
-      <PostList category={category} posts={posts} />
+      <PostList posts={posts} />
     </div>
   )
 }

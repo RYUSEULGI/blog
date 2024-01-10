@@ -2,10 +2,11 @@ import { Footer } from '@/components/layouts/footer'
 import { Navbar } from '@/components/layouts/navbar'
 
 import { ReactNode } from 'react'
-import Providers from '../providers'
 
 import { baseUrl } from '@/libs/utils'
 import { Inter } from 'next/font/google'
+import Providers from '../providers'
+
 import '../../styles/globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
