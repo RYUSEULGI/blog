@@ -3,27 +3,28 @@
 import DefaultText from '@/components/typography/default-text'
 import SubTitle from '@/components/typography/sub-title'
 import { useHover } from '@/hooks/use-hover'
-import { Post } from '@/interface/post'
+import { IPost } from '@/interface/post'
 import clsx from 'clsx'
 import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
 
 interface Props {
-  posts: Post[]
+  category: string
+  posts: IPost[]
 }
 
-export function PostList({ posts }: Props) {
+export function PostList({ category, posts }: Props) {
   return (
     <AnimatePresence>
       {posts.map((post, index: number) => (
         <motion.div
-          key={`post-list-item-${post.slug}`}
+          key={`post-list-item-${post._id}-${index}`}
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: index * 0.2 }}
           className="w-full"
         >
-          <Link href={`/posts/${post.slug}`}>
+          <Link href={`/posts/${category}/${post._raw.sourceFileName}`}>
             <PostListItem post={post} />
           </Link>
         </motion.div>
@@ -32,7 +33,7 @@ export function PostList({ posts }: Props) {
   )
 }
 
-function PostListItem({ post }: { post: Post }) {
+function PostListItem({ post }: { post: IPost }) {
   const { isHover, ref, ...props } = useHover()
 
   return (
@@ -46,10 +47,12 @@ function PostListItem({ post }: { post: Post }) {
         >
           {post.title}
         </SubTitle>
-        <DefaultText className="mb-2 line-clamp-2 text-neutral-500">
+        <DefaultText className="mb-2 line-clamp-2 text-neutral-500 dark:text-gray-300">
           {post.description}
         </DefaultText>
-        <p className="text-sm text-neutral-500">{post.date}</p>
+        <p className="text-sm text-neutral-500 dark:text-gray-300">
+          {post.date}
+        </p>
       </div>
     </div>
   )

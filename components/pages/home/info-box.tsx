@@ -5,7 +5,7 @@ import Image from 'next/image'
 
 export function InfoBox() {
   return (
-    <div className="mt-6 mb-4 w-full flex items-center justify-center flex-col">
+    <section className="mt-6 mb-4 w-full flex items-center justify-center flex-col">
       <Image
         src="/profile.jpg"
         alt="profile_image"
@@ -28,6 +28,6 @@ export function InfoBox() {
       <DefaultText className="text-gray-400 dark:text-gray-300">
         꾸준하게 글을 쓰려고 합니다.
       </DefaultText>
-    </div>
+    </section>
   )
 }

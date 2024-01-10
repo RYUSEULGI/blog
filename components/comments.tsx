@@ -22,10 +22,7 @@ export function Comments() {
         scriptElement.setAttribute('src', 'https://utteranc.es/client.js')
         scriptElement.setAttribute('repo', 'RYUSEULGL/blog')
         scriptElement.setAttribute('issue-term', 'pathname')
-        scriptElement.setAttribute(
-          'theme',
-          isDark ? 'github-dark' : 'github-light',
-        )
+        scriptElement.setAttribute('theme', 'github-light')
         scriptElement.setAttribute('crossorigin', 'anonymous')
         scriptElement.setAttribute('async', 'true')
         element.replaceChildren(scriptElement)

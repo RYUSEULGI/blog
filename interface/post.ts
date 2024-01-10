@@ -1,14 +1,15 @@
+import { Post } from '@/.contentlayer/generated'
+
 export enum PostCategory {
   전체 = 'all',
   글 = 'article',
   알고리즘 = 'algorithm',
 }
 
-export interface Post {
-  slug: string
-  title: string
-  description: string
-  date: string
-  tags: string[]
-  content: string
+export interface IPost extends Post {}
+
+export interface IPostDetail {
+  post: IPost
+  prevPost: IPost | null
+  nextPost: IPost | null
 }

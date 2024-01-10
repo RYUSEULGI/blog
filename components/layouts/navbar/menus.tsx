@@ -4,8 +4,8 @@ import { ReactNode } from 'react'
 export function NavbarMenus() {
   return (
     <ul className="flex items-center gap-3 cursor-pointer">
-      <Menu href="/">Home</Menu>
-      <Menu href="/posts">Posts</Menu>
+      <Menu href="/">Posts</Menu>
+      <Menu href="/archive">Archive</Menu>
       <Menu href="/tags">Tags</Menu>
     </ul>
   )

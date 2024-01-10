@@ -1,29 +1,28 @@
-import { MDXRemote } from 'next-mdx-remote/rsc'
-import rehypePrism from 'rehype-prism-plus'
-import remarkGfm from 'remark-gfm'
+import Image from 'next/image'
 
 import { Suspense } from 'react'
 
+import { useMDXComponent } from 'next-contentlayer/hooks'
 import '../../styles/md.css'
 
-const options: {
-  mdxOptions: {
-    remarkPlugins: any[]
-    rehypePlugins: any[]
-  }
-} = {
-  mdxOptions: {
-    remarkPlugins: [remarkGfm],
-    rehypePlugins: [rehypePrism],
-  },
-}
-
 export function PostBody({ content }: { content: string }) {
+  const MDXContent = useMDXComponent(content)
+
   return (
     <section>
       <Suspense fallback={<>Loading...</>}>
         <div className="mx-auto lg:max-w-4xl prose dark:prose-invert">
-          <MDXRemote source={content} options={options} />
+          <MDXContent
+            components={{
+              img: (props) => (
+                <Image
+                  src={props.src || ''}
+                  alt={props.alt || 'image'}
+                  className="w-full flex items-center justify-center"
+                />
+              ),
+            }}
+          />
         </div>
       </Suspense>
     </section>

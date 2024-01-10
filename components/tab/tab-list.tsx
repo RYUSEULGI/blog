@@ -38,7 +38,7 @@ export function TabList({ value, items }: Props) {
   }, [activeTabIndex, items, value])
 
   const handleClick = (value: string, index: number) => {
-    router.push(`/posts?category=${value}`)
+    router.push(`?category=${value}`)
     setActiveTabIndex(index)
   }
 
