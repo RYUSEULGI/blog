@@ -1,3 +1,4 @@
+import { Comments } from '@/components/comments'
 import LinkHover from '@/components/link-hover'
 import { PostBody } from '@/components/post/post-body'
 import { PostFooter } from '@/components/post/post-footer'
@@ -89,6 +90,7 @@ export default async function PostDetailPage({
           )}
         </div>
       </article>
+      <Comments />
     </>
   )
 }

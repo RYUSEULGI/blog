@@ -2,8 +2,8 @@
 
 import { useScrollTop } from '@/hooks/use-scroll-top'
 import clsx from 'clsx'
-import { ThemeButton } from './ThemeButton'
 import { NavbarMenus } from './menus'
+import { ThemeButton } from './theme-button'
 
 export function Navbar() {
   const scrolled = useScrollTop()
