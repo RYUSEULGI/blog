@@ -1,0 +1,76 @@
+---
+title: "Top K Frequent Elements"
+description: "Leetcode Top 100 Liked Questions Sorting"
+category: "algorithm"
+tags:
+  - algorithm
+  - Sorting
+  - Leetcode
+date: "2024-01-11"
+---
+
+- 알고리즘 : Sorting
+- 난이도 : Medium
+
+## 문제
+
+Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order.
+
+Input: nums = [1,1,1,2,2,3], k = 2
+Output: [1,2]
+
+## 풀이
+
+```ts
+function topKFrequent(nums: number[], k: number): number[] {
+  const map = new Map();
+  const result = [];
+
+  nums.forEach((num) => {
+    if (map.has(num)) {
+      const target = map.get(num);
+      map.set(num, target + 1);
+    } else {
+      map.set(num, 1);
+    }
+  });
+
+  const array = map.entries();
+
+  for (let x of array) {
+    const [key, value] = x;
+
+    if (value >= k) {
+      result.push(key);
+    }
+  }
+
+  return result;
+}
+```
+
+처음에는 k번 이상 나타난 숫자를 배열에 담아서 출력하는 문제인 줄 알고 다음과 같이 문제를 풀었다.  
+하지만 `nums = [1,2] k = 2`인 테스트케이스에서 오류가 발생했고, 문제 자체를 제대로 읽지 않은것을 발견했다..........
+
+```ts
+function topKFrequent(nums: number[], k: number): number[] {
+  const map = new Map();
+
+  nums.forEach((num) => {
+    if (map.has(num)) {
+      const target = map.get(num);
+      map.set(num, target + 1);
+    } else {
+      map.set(num, 1);
+    }
+  });
+
+  const sort = new Map([...map.entries()].sort((a, b) => b[1] - a[1]));
+  const result = [...sort.keys()].slice(0, k);
+
+  return result;
+}
+```
+
+- K번째까지 자주 나타나는 요소를 찾는 문제
+- map을 통해 숫자들이 몇번 나타났는지 key-value형태로 나타낸 뒤, 정렬을 통해 문제 해결
