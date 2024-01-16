@@ -17,7 +17,7 @@ date: '2024-01-08'
 
 ## Next.js vs Gatsby
 
-React 기반으로 블로그를 만들려고 했기 때문에 Gatsby 프레임워크를 사용해서 개발하는 방법이 가장 먼저 떠올랐다. 단순 정적 사이트이기 때문에 Gatsby를 사용할까 했지만 SEO Next.js와 좀더 친해지고자 Next.js를 사용해서 블로그를 개발하기로 선택했다.
+React 기반으로 블로그를 만들려고 했기 때문에 Gatsby 프레임워크를 사용해서 개발하는 방법이 가장 먼저 떠올랐다. 단순 정적 사이트이기 때문에 Gatsby를 사용할까 했지만 Next.js와 좀더 친해지고자 Next.js를 사용해서 블로그를 개발하기로 선택했다.
 
 ## 기능 도출
 
@@ -30,75 +30,136 @@ React 기반으로 블로그를 만들려고 했기 때문에 Gatsby 프레임�
 
 ## 마크다운으로 글 작성하기
 
-> vercel의 [blog-starter](https://github.com/vercel/next.js/tree/canary/examples/blog-starter) 레포지토리와 [공식문서](https://nextjs.org/docs/app/building-your-application/configuring/mdx)를 참고하여 마크다운으로 글 작성하는 법을 추가했다.
+다른 블로그들을 찾아보면 vercel의 [blog-starter](https://github.com/vercel/next.js/tree/canary/examples/blog-starter) 레포지토리와 [공식문서](https://nextjs.org/docs/app/building-your-application/configuring/mdx)를 참고하여 마크다운으로 글 작성하는 법을 가장 많이 발견 할 수 있었다. 하지만 나는 마크다운이나 다른 데이터 콘텐츠를 가져오기도 좋은 [Contentlayer](https://contentlayer.dev/)를 활용하기로 결정했다.
 
-### 1. 파일 가져오기
+### 1. contentlayer 설치 후 next.js 설정
 
-```typescript
-import fs from 'fs'
-import matter from 'gray-matter'
-import { join } from 'path'
+```ts
+//next.config.js
 
-const dir = join(process.cwd(), 'posts/article')
-const fullPath = join(dir, `${realSlug}.md`)
-const fileContents = fs.readFileSync(fullPath, 'utf8')
-const { data, content } = matter(fileContents)
+const { withContentlayer } = require('next-contentlayer')
+
+/**
+ * @type {import('next').NextConfig}
+ **/
+const nextConfig = {
+  output: 'export',
+}
+
+module.exports = withContentlayer(nextConfig)
 ```
 
-파일 경로의 파일을 가지고 와서 파싱 하는 방법을 통해 작성된 데이터를 얻을 수 있다. 이때 [gray-matter](https://www.npmjs.com/package/gray-matter) 라이브러리를 사용하는데 마크다운 파일의 메타데이터를 쉽게 파싱 할 수 있게 도와준다.
+### 2. 타입스크립트 설정
+
+```ts
+// tsconfig.json
+{
+  "compilerOptions": {
+    "paths": {
+      "contentlayer/generated": ["./.contentlayer/generated"]
+    }
+  },
+  "include": [
+    ".contentlayer/generated"
+  ]
+}
+```
+
+### 3. contentlayer 설정
+
+```ts
+import { defineDocumentType, makeSource } from 'contentlayer/source-files'
+import rehypePrism from 'rehype-prism-plus'
+import remarkGfm from 'remark-gfm'
+
+// 여기에 정의된 필드는 mdx 문서
+defining document type where we will defing our mdx document frontmatter structure
+export const Post = defineDocumentType(() => ({
+  name: 'Post',
+  contentType: 'mdx',
+  filePathPattern: `**/*.mdx`,
+  fields: {
+    title: {
+      type: 'string',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      required: true,
+    },
+    category: {
+      type: 'string',
+      required: true,
+    },
+    tags: {
+      type: 'list',
+      required: false,
+      of: { type: 'string' },
+    },
+    date: {
+      type: 'string',
+      required: true,
+    },
+  },
+}))
+
+// mdx 플러그인 설정
+const contentSource = makeSource({
+  contentDirPath: 'posts',
+  documentTypes: [Post],
+  mdx: {
+    remarkPlugins: [remarkGfm],
+    rehypePlugins: [rehypePrism]
+  },
+})
+
+export default contentSource
+```
+
+`remark-*`markdown과, `rehype-*`은 html과 관련된 플러그인을 뜻한다. 나는 많은 플러그인들 중에 가장 기본적인 remark-gfm와 rehype-prism-plus를 사용했다.
+
+- remark-gfm — support GFM (autolink literals, footnotes, strikethrough, tables, tasklists)
+- rehype-prism-plus — syntax highlighting with Prism via refractor with extras[Prism.js](https://github.com/PrismJS/prism-themes/tree/master/themes)
+
+> remark-gfm의 최신 버전 설치시 [TypeError발생](https://github.com/remarkjs/remark-gfm/issues/57)기 빌셍히여 3.0.1로 다운그레이드 하여 설치를 했다.
 
 ```md
-## // md 상단
+title: 'Next.js로 블로그 만들기(1)'
+description: '미루고 미루던 개발 블로그를 만들어보자'
+category: 'article'
+tags:
 
-title: Hello
-slug: home
-
----
-
-<h1>Hello world!</h1>
-
-// 결과
-{
-"content": "<h1>Hello world!</h1>",
-"data": {
-"title": "Hello",
-"slug": "home"
-}
-}
+- Next.js
+- Blog
+- Markdown
+  date: '2024-01-08'
 ```
 
 예를 들어 마크다운 파일의 최상단에 다음과 같이 작성해 주면 json 형태의 결과값을 얻을 수 있다. 이를 응용하여 작성한 글을 가지고 올 수 있게 된다.
 
-### 2. html로 변환
+### 4. html로 변환
 
-작성한 글을 가지고 왔으면 화면에 보여주어야 하는데 [공식문서](https://nextjs.org/docs/app/building-your-application/configuring/mdx)에서 확인 할 수 있듯이 `next-mdx-remote`패키지로 마크다운을 html로 변환하여 나타내 준다.
+```jsx
+import { useMDXComponent } from 'next-contentlayer/hooks'
 
-### 3. 스타일링
+export function PostBody({ content }: { content: string }) {
+  const MDXContent = useMDXComponent(content)
 
-html로 변환하여 나타내 주면 끝인 줄 알았지만 화면을 살펴보니 스타일링이 적용되지 않은 걸 확인 할 수 있었다 마크다운을 html로 변환만 해준거니 당연한 결과였다.
-
-```css
-.markdown {
-  @apply text-lg leading-relaxed;
-}
-
-.markdown p,
-.markdown ul,
-.markdown ol,
-.markdown blockquote {
-  @apply my-6;
-}
-
-.markdown h2 {
-  @apply text-3xl mt-12 mb-4 leading-snug;
-}
-
-.markdown h3 {
-  @apply text-2xl mt-8 mb-4 leading-snug;
+  return (
+    <section>
+      <Suspense fallback={<>Loading...</>}>
+        <MDXContent />
+      </Suspense>
+    </section>
+  )
 }
 ```
 
-blog-starter에서는 이런식으로 직접 css를 직접 적용해 주었지만 [@tailwindcss/typography](https://tailwindcss.com/docs/typography-plugin)플러그인이 깔끔하게 잘 되어 있어서 나는 플러그인을 사용했다.
+작성한 글을 가지고 왔으면 화면에 보여주어야 하는데 `useMDXComponent` 훅을 사용하여 마크다운을 html로 변환하여 나타내 준다.
+
+### 5. 스타일링
+
+html로 변환하여 나타내 주면 끝인 줄 알았지만 화면을 살펴보니 스타일링이 적용되지 않은 걸 확인 할 수 있었다. 마크다운을 html로 변환만 해준거니 당연한 결과였다. [@tailwindcss/typography](https://tailwindcss.com/docs/typography-plugin) 플러그인에서 깔끔하게 폰트와 관련된 스타일이 잘 되어 있어서 나는 해당 플러그인을 사용했다.
 
 ```ts
 /** @type {import('tailwindcss').Config} */
@@ -113,39 +174,20 @@ module.exports = {
 }
 ```
 
-```tsx
-<div className="prose dark:prose-invert">
-  <MDXRemote source={content} options={options} />
-</div>
-```
+```css
+.prose a {
+  @apply text-orange-400;
+}
 
-1. @tailwindcss/typography 설치 후 플러그인을 적용
-2. className="prose dark:prose-invert"을 추가
+.prose a:hover {
+  @apply text-orange-200;
+}
+```
 
 깔끔하게 타이포그래피가 HTML에 적용된 모습을 볼 수 있다. 추가적인 스타일은 `prose` 클랙스명을 추가해서 커스텀이 가능하다.
 
-### 4. 플러그인 적용
+---
 
-`remark-*`markdown과, `rehype-*`은 html과 관련된 플러그인을 뜻한다. 나는 많은 플러그인들 중에 가장 기본적인 remark-gfm와 rehype-prism-plus를 사용했다.
+## 마치며
 
-- remark-gfm — support GFM (autolink literals, footnotes, strikethrough, tables, tasklists)
-- rehype-prism-plus — syntax highlighting with Prism via refractor with extras[Prism.js](https://github.com/PrismJS/prism-themes/tree/master/themes)
-
-```tsx
-import { MDXRemote } from 'next-mdx-remote/rsc'
-import rehypePrism from 'rehype-prism-plus'
-import remarkGfm from 'remark-gfm'
-
-import '../../styles/md.css'
-
-const options = {
-  mdxOptions: {
-    remarkPlugins: [remarkGfm],
-    rehypePlugins: [rehypePrism],
-  },
-}
-
-return <MDXRemote source={content} options={options} />
-```
-
-> remark-gfm의 최신 버전 설치시 [TypeError발생](https://github.com/remarkjs/remark-gfm/issues/57) -> 3.0.1로 다운그레이드 하여 설치
+next.js와 contentlayer를 사용해서 간단하게 정적인 블로그를 완성했다. 메타데이터 및 sitemap.xml 등등 추가해주어야 될 것들이 많지만 글을 작성하고 작성한 글을 예쁘게 보여주는 것 까지는 완성이 되었다.

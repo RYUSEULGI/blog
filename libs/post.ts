@@ -70,9 +70,15 @@ export function getPostBySlug(category: string, slug: string) {
 }
 
 export function getPostListByTag(tag: string) {
-  const posts = getPostAll().filter(
-    (post) => post.tags && post.tags.includes(tag),
-  )
+  const posts = getPostAll()
+    .filter((post) => post.tags && post.tags.includes(tag))
+    .map((post) => ({
+      ...post,
+      _raw: {
+        ...post._raw,
+        sourceFileName: post._raw.sourceFileName.replace('.mdx', ''),
+      },
+    }))
 
   return posts
 }
