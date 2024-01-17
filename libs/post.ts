@@ -10,8 +10,8 @@ export function getArchiveList() {
 export function getPostAll() {
   const posts = allPosts.filter(
     (post) =>
-      post._raw.sourceFilePath.includes('article') ||
-      (post._raw.sourceFilePath.includes('algorithm') &&
+      post._raw.sourceFilePath.includes(PostCategory.글) ||
+      (post._raw.sourceFilePath.includes(PostCategory.알고리즘) &&
         post._raw.sourceFileName !== 'index.mdx'),
   )
   return posts
@@ -21,7 +21,7 @@ export function getArticlePostAll() {
   const posts = allPosts
     .filter(
       (post) =>
-        post._raw.sourceFilePath.includes('article') &&
+        post._raw.sourceFilePath.includes(PostCategory.글) &&
         post._raw.sourceFileName !== 'index.mdx',
     )
     .map((post) => ({
@@ -40,7 +40,7 @@ export function getAlgorithmPostAll() {
   const posts = allPosts
     .filter(
       (post) =>
-        post._raw.sourceFilePath.includes('algorithm') &&
+        post._raw.sourceFilePath.includes(PostCategory.알고리즘) &&
         post._raw.sourceFileName !== 'index.mdx',
     )
     .map((post) => ({
