@@ -1,0 +1,169 @@
+---
+title: 'Next.js로 블로그 만들기(2)'
+description: 'Next.js 13버전으로 SEO 최적화를 해보자'
+category: 'article'
+tags:
+  - Next.js
+  - Blog
+  - SEO
+date: '2024-01-16'
+---
+
+## 시작하며
+
+next.js 13으로 업데이트 되면서 SEO 관련해서 여러 개선 사항과 새로운 기능들이 추가 되었다. 이를 직접 적용해 보면서 어떤 점들이 달라졌는지 살펴 보면 좋을 듯 하여 글을 작성하게 되었다.
+
+## 메타데이터
+
+SEO와 웹공유성 향상을 위해 메타데이터를 추가 해야한다.
+
+### 1. Static metadata
+
+```ts
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'skeyyy 개발 블로그',
+  description: 'skeyyy 개발 블로그 입니다.',
+}
+```
+
+정적인 메타데이터를 Metadata 객체를 통해 layout.tsx나 page.tsx에 정의를 해준다.
+
+### 2. Dynamic metadata
+
+```ts
+export async function generateMetadata({
+  params,
+}: {
+  params: { slugs: string[] }
+}): Promise<Metadata> {
+  const [category, slug] = params.slugs
+
+  const { post } = getPostBySlug(category, slug)
+
+  if (!post) {
+    return notFound()
+  }
+
+  return {
+    title: post.title,
+    description: post.description,
+    keywords: post.tags,
+  }
+}
+```
+
+동적인 메타데이터가 필요한 경우(현재 라우트 파라미터, 부모 요소의 메타데이터 등)generateMetadata 함수를 사용해서 정의 해줄 수 있다.
+
+- 정적, 동적 메타데이터는 모두 서버컴포넌트에서만 사용 가능
+- fetch API를 통해 비동기 함수를 호출하는 경우에는 동일한 데이터인 경우 자동으로 캐싱 가능(fetch API가 아닌경우 React의 cache로 감싸주면 된다.)
+
+```html
+// root 경로
+<meta name="description" content="skeyyy 개발 블로그 입니다." />
+
+// article 경로
+<meta name="description" content="SEO 최적화를 해보자" />
+```
+
+동일한 경로내에 메타데이터가 중복된다면 결합되서 메타데이터가 출력된다. 중복되는 경우 가장 가까운 경로의 메타데이터가 출력된다.
+
+## JSON-LD
+
+JSON-LD는 검색 엔진에서 콘텐츠를 이해하는 데 사용할 수 있는 구조화된 데이터 형식이다. 예를 들어서 사람, 사건, 조직, 영화, 책, 요리법 등과 같은 개체를 설명하는 데 사용할 수 있고, layout이나 page에서 사용하는 것으로 권장된다. 나는 BlogPosting 스키마를 사용해서 정의를 해주었다. 스키마는 [Schema.org](https://schema.org/)에서 검색이 가능하다.
+
+```ts
+const postJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  '@id': `${baseUrl}/posts/${category}/${post._raw.sourceFileName}#BlogPosting`,
+  name: post.title,
+  description: post.description,
+  datePublished: post.date,
+  url: `${baseUrl}/posts/${category}/${post._raw.sourceFileName}`,
+}
+
+return (
+  <section>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(postJsonLd),
+      }}
+    />
+    {children}
+  </section>
+)
+```
+
+<img src="/article/make-blog/json-ld.png" />
+
+layout에 json-ld를 추가를 해주면 다음과 같이 개발자 도구에서 확인이 가능하다. 제대로 된 데이터로 구조화 됐는지 확인하고 싶으면 [Rich Results Test](https://search.google.com/test/rich-results)에서 검사해 볼 수 있다.
+
+## robots.txt
+
+robots.txt는 웹사이트에 대해서 크롤링 봇이 접근 가능한 경로를 알려주는 지침 역할을 한다. 해당 파일에서 Allow, Disallow를 통해 접근 가능 여부를 알 수 있다. robots.txt를 설정해 주지 않으면 웹사이트에서 찾을 수 있는 모든 정보를 크롤링하여 검색엔진에 노출이 될 수 있다.
+
+> 참고 할 케이스가 많아 레퍼런스로 [Apple robots.txt](https://www.apple.com/robots.txt)를 보고 구성을 했었다.
+
+전에는 static 하게 robots.txt 파일을 관리 했었는데 next.js 13버전 이후로 [Robots 객체](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/robots)를 통해 관리 할 수도 있는 방법이 생겼다.
+
+```ts
+import { MetadataRoute } from 'next'
+
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: {
+      // 모든 웹 크롤러에 대한 모든 폴더 접근 허용
+      userAgent: '*',
+      allow: '/',
+    },
+    sitemap: `${baseUrl}/sitemap.xml`,
+  }
+}
+```
+
+## Sitemap.xml
+
+검색 엔진이 웹 페이지를 효율적으로 색인할 수 있도록 도와주는 파일이다.
+
+- 검색 엔진에 의해 감지되기 어려운 파일들을 검색 엔진에 포함
+- 새로운 콘텐츠나 수정된 콘텐츠를 검색 엔진에 신속하게 알려서 업데이트된 정보가 빠르게 검색 결과에 반영
+- 각 페이지에 대한 상대적인 우선 순위를 지정 가능
+
+다음과 같은 특징이 있어 sitemap.xml파일을 제공하는 것이 좋다. sitemap파일도 이전에는 [next-sitemap](https://www.npmjs.com/package/next-sitemap) 라이브러리 설치해서 동적으로 만들었던 기억이 있는데 이제는 [MetadataRoute](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap)에서 바로 가능해졌다.
+
+```ts
+import { getPostAll } from '@/libs/post'
+import { baseUrl } from '@/libs/utils'
+
+import { MetadataRoute } from 'next'
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const routesMap = [''].map((route) => ({
+    url: `${baseUrl}${route}`,
+    lastModified: new Date().toISOString(),
+  }))
+
+  const posts = getPostAll().map((post) => ({
+    url: `${baseUrl}/posts/${post.category}/${post._raw.sourceFileName}`,
+    lastModified: new Date(post.date).toISOString(),
+  }))
+
+  let fetchedRoutes: Route[] = []
+
+  try {
+    fetchedRoutes = (await Promise.all([posts])).flat()
+  } catch (error) {
+    throw JSON.stringify(error, null, 2)
+  }
+
+  return [...routesMap, ...fetchedRoutes]
+}
+```
+
+## 참고
+
+- [Metadata Files API Reference](https://nextjs.org/docs/app/api-reference/file-conventions/metadata)
+- [vercel commerce 레포지토리](https://github.com/vercel/commerce)

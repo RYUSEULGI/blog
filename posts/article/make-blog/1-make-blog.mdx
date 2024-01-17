@@ -72,7 +72,7 @@ import { defineDocumentType, makeSource } from 'contentlayer/source-files'
 import rehypePrism from 'rehype-prism-plus'
 import remarkGfm from 'remark-gfm'
 
-// 여기에 정의된 필드는 mdx 문서
+// 여기에 정의된 필드는 mdx 문서의 데이터 필드가 된다.
 defining document type where we will defing our mdx document frontmatter structure
 export const Post = defineDocumentType(() => ({
   name: 'Post',
@@ -135,7 +135,23 @@ tags:
   date: '2024-01-08'
 ```
 
-예를 들어 마크다운 파일의 최상단에 다음과 같이 작성해 주면 json 형태의 결과값을 얻을 수 있다. 이를 응용하여 작성한 글을 가지고 올 수 있게 된다.
+예를 들어 마크다운 파일의 최상단에 다음과 같이 작성해 주면 json 형태의 결과값을 얻을 수 있다. 이를 응용하여 작성한 글을 가지고 올 수 있게 된다. 여기 까지 끝내서 개발 서버를 실행하면 루트경로에 `.contentlayer`라는 폴더가 생긴 것을 확인 할 수 있다.
+
+```ts
+import { Post, DocumentTypes, DataExports } from './types'
+import {
+  SourceProvideSchemaErrorJSON,
+  SourceFetchDataErrorJSON,
+} from 'contentlayer/core'
+
+export * from './types'
+
+export declare const allPosts: Post[]
+
+export declare const allDocuments: DocumentTypes[]
+```
+
+/generated/index.d.ts의 allPosts를 통해 파일 내의 mdx 파일을 가지고 올 수 있게 된다.
 
 ### 4. html로 변환
 
